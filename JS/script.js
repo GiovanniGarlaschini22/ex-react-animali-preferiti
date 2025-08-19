@@ -42,11 +42,11 @@ function ListaAnimali() {
 
 // monto il componente nell'elemento con la classe .lista-animali //
 
-document.addEventListener ('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const container = document.querySelector('.lista-animali');
-    if(container) {
+    if (container) {
         const root = ReactDOM.createRoot(container);
-        root.render(<ListaAnimali/>)
+        root.render(<ListaAnimali />)
     }
 });
 
@@ -72,6 +72,45 @@ Obiettivo: L’utente può vedere gli animali aggiunti dinamicamente nella lista
 
 // ❗️ ESECUZIONE LOGICA MILESTONE 2 ❗️ //
 
+// array per la scelta casuale //
+const animalsChoices = ["Cane", "Gatto", "Pappagallo", "Cavallo", "Panda"];
+
+// componente per la lista di animali //
+function ListaAnimali() {
+    // useState per gestire l'array degli animali //
+    const [amimals, setAnimals] = React.useState([]);
+
+    // funzione per aggiungere un animale casuale //
+    const aggiungiAnimale = () => {
+        const randomIndex = Math.floor(Math.random() * animalsChoices.length);
+        const animaleCasuale = animalsChoices[randomIndex];
+        setAnimals(prevAnimals => [...prevAnimals, animaleCasuale]);
+    };
+
+    return (
+        <div>
+            <button onClick={aggiungiAnimale}>aggiungi animale</button>
+            <details>
+                <summary>Animali</summary>
+                <ul>
+                    {animals.map((animal, index) => (
+                        <li key={index}>{animal}</li>
+                    ))}
+                </ul>
+            </details>
+        </div>
+    );
+}
+
+// monto il componente nell'elemento con la classe .lista-animali //
+
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.querySelector('.lista-animali');
+    if (container) {
+        const root = ReactDOM.createRoot(container);
+        root.render (<ListaAnimali/>);
+    }
+});
 
 
 
@@ -82,9 +121,9 @@ Obiettivo: L’utente può vedere gli animali aggiunti dinamicamente nella lista
 Partendo da questo componente Modal:
 
 function Modal({
-      title, 
-      content, 
-      show = false, 
+      title,
+      content,
+      show = false,
       onClose = () => {}
   }){
       return show && ReactDOM.createPortal(
