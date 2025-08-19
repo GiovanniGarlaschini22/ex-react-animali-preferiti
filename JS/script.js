@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const container = document.querySelector('.lista-animali');
     if (container) {
         const root = ReactDOM.createRoot(container);
-        root.render (<ListaAnimali/>);
+        root.render(<ListaAnimali />);
     }
 });
 
@@ -172,3 +172,100 @@ Obiettivo: L’utente può aggiungere animali specifici utilizzando la modale.
 
 
 // ❗️ ESECUZIONE LOGICA MILESTONE 3 ❗️ //
+
+// Componente Modal espanso //
+function Modal({
+    title,
+    content,
+    show = false,
+    onClose = () => { },
+    onConfirm = () => { }
+}) {
+    return show && ReactDOM.createPortal(
+        <div className="modal-container">
+            <div className="modal">
+                <h2>{title}</h2>
+                <div>{content}</div>
+                <div>
+                    <button onClick={onClose}>Annulla</button>
+                    <button onClick={onConfirm}>Conferma</button>
+                </div>
+            </div>
+        </div>,
+        document.body
+    )
+}
+
+// Componente React per la lista di animali //
+function ListaAnimali() {
+    // useState per gestire l'array di animali (inizialmente vuoto) //
+    const [animals, setAnimals] = React.useState([]);
+
+    // useState per gestire la visibilità della modale //
+    const [showModal, setShowModal] = React.useState(false);
+
+    // useState per gestire il valore dell'input //
+    const [inputValue, setInputValue] = React.useState('');
+
+    // Funzione per aprire la modale //
+    const apriModale = () => {
+        setShowModal(true);
+        setInputValue('');
+    };
+
+    // Funzione per chiudere la modale //
+    const chiudiModale = () => {
+        setShowModal(false);
+        setInputValue('');
+    };
+
+    // Funzione per confermare e aggiungere l'animale //
+    const confermaAnimale = () => {
+        if (inputValue.trim()) {
+            setAnimals(prevAnimals => [...prevAnimals, inputValue.trim()]);
+            chiudiModale();
+        };
+    };
+
+    // Componente input da passare come content alla modale //
+    const inputContent = (
+        <input
+            type="text"
+            placeholder="Inserisci il nome di un animale"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && confermaAnimale()}
+        />
+    );
+
+    return (
+        <div>
+            <button onClick={apriModale}>Aggiungi Animale</button>
+            <details>
+                <summary>Animali</summary>
+                <ul>
+                    {animals.map((animal, index) => (
+                        <li key={index}>{animal}</li>
+                    ))};
+                </ul>
+            </details>
+
+            <Modal
+                title="Aggiungi un nuovo animale"
+                content={inputContent}
+                show={showModal}
+                onClose={chiudiModale}
+                onConfirm={confermaAnimale}
+            />
+        </div>
+    );
+};
+
+// monto il componente nell'elemento con classe .lista-animali //
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.querySelector('.lista-animali');
+    if (container) {
+        const root = ReactDOM.createRoot(container);
+        root.render(<ListaAnimali />);
+    };
+});
